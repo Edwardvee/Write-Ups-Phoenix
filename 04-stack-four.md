@@ -88,6 +88,22 @@ to achieve this the payload we inject should be sufficient to also overpass the 
 
 Now that we know the address `080484e5` corresponds to the `complete_level()` function, we can begin crafting our payload and pass it through STDIN
 
+we can see in this line that the compiler actually reserves 88 bytes in the stack,
+
+
+```asm 
+8048508:       83 ec 58                sub    $0x58,%esp
+```
+
+
+
+but the return value of `gets` is stored in 
+`ebp-0x4c`, that is where our actual payload will be stored, that would be ebp-76, and we know that ebp will have the return value in ebp+4. 
+```asm
+ 804851a:       8b 45 04                mov    0x4(%ebp),%eax
+
+```
+So that is how we calculate that we need 80 bytes of padding to add a 4 byte address, that would be the RET address. 
 
 ## Solution
 
